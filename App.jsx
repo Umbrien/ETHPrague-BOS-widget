@@ -215,6 +215,9 @@ const requestHandler = (request, response, Utils) => {
     case "create-package":
       createPackageHandler(request, response, Utils);
       break;
+    case "create-report":
+      createReportHandler(request, response, Utils);
+      break;
   }
 };
 
@@ -305,6 +308,27 @@ const createPackageHandler = (request, response, Utils) => {
     .catch((err) => {
       console.log("[BOS] create-package error", err);
       response(request).send({ ok: false });
+    });
+};
+
+const createReportHandler = (request, response, Utils) => {
+  console.log("[BOS] create-report");
+  const suschain = new ethers.Contract(
+    contract,
+    abiObj,
+    Ethers.provider().getSigner()
+  );
+
+  const { parent, reportDescription } = request.payload;
+
+  suschain
+    .addPackageSnapshot(parent, 3, "Reported", reportDescription)
+    .then((result) => {
+      response(request).send(true);
+    })
+    .catch((err) => {
+      console.log("[BOS] create-report error", err);
+      response(request).send(false);
     });
 };
 
