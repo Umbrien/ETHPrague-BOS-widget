@@ -203,6 +203,9 @@ const requestHandler = (request, response, Utils) => {
     case "make-me-user":
       makeMeUserHandler(request, response, Utils);
       break;
+    case "create-package":
+      createPackageHandler(request, response, Utils);
+      break;
   }
 };
 
@@ -234,6 +237,7 @@ const makeMeAdminHandler = (request, response, Utils) => {
     })
     .catch((err) => {
       console.log("[BOS] make-me-admin error", err);
+      response(request).send(false);
     });
 };
 
@@ -253,6 +257,27 @@ const makeMeUserHandler = (request, response, Utils) => {
     })
     .catch((err) => {
       console.log("[BOS] make-me-user error", err);
+      response(request).send(false);
+    });
+};
+
+const createPackageHandler = (request, response, Utils) => {
+  console.log("[BOS] create-package");
+  const suschain = new ethers.Contract(
+    contract,
+    abiObj,
+    Ethers.provider().getSigner()
+  );
+
+  suschain
+    .addPackageSnapshot(0, request.payload)
+    .then((result) => {
+      console.log("[BOS] create-package result", result);
+      response(request).send(true);
+    })
+    .catch((err) => {
+      console.log("[BOS] create-package error", err);
+      response(request).send(false);
     });
 };
 
