@@ -200,6 +200,9 @@ const requestHandler = (request, response, Utils) => {
     case "get-wallet-address":
       getWalletAddressHandler(request, response, Utils);
       break;
+    case "set-print-input":
+      setPrintInputHandler(request, response, Utils);
+      break;
     case "make-me-admin":
       makeMeAdminHandler(request, response, Utils);
       break;
@@ -227,6 +230,12 @@ const isAdminHandler = (request, response, Utils) => {
 const getWalletAddressHandler = (request, response, Utils) => {
   console.log("[BOS] get-wallet-address");
   response(request).send(sender);
+};
+
+const setPrintInputHandler = (request, response, Utils) => {
+  console.log("[BOS] set-print-input");
+  State.update({ packageId: request.payload, packageInfo: null });
+  response(request).send(true);
 };
 
 const makeMeAdminHandler = (request, response, Utils) => {
