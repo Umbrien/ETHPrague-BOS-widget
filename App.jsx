@@ -218,6 +218,9 @@ const requestHandler = (request, response, Utils) => {
     case "create-report":
       createReportHandler(request, response, Utils);
       break;
+    case "accept-package":
+      acceptPackageHandler(request, response, Utils);
+      break;
   }
 };
 
@@ -328,6 +331,27 @@ const createReportHandler = (request, response, Utils) => {
     })
     .catch((err) => {
       console.log("[BOS] create-report error", err);
+      response(request).send(false);
+    });
+};
+
+const acceptPackageHandler = (request, response, Utils) => {
+  console.log("[BOS] accept-package");
+  const suschain = new ethers.Contract(
+    contract,
+    abiObj,
+    Ethers.provider().getSigner()
+  );
+
+  const parent = request.payload;
+
+  suschain
+    .addPackageSnapshot(parent, 4, "", "")
+    .then((result) => {
+      response(request).send(true);
+    })
+    .catch((err) => {
+      console.log("[BOS] accept-package error", err);
       response(request).send(false);
     });
 };
