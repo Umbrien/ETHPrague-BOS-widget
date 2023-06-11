@@ -5,12 +5,7 @@ const abiObj = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+      { indexed: false, internalType: "address", name: "", type: "address" },
     ],
     name: "AdminAdded",
     type: "event",
@@ -18,12 +13,7 @@ const abiObj = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+      { indexed: false, internalType: "address", name: "", type: "address" },
     ],
     name: "AdminRemoved",
     type: "event",
@@ -55,6 +45,12 @@ const abiObj = [
             type: "tuple",
           },
           { internalType: "uint256", name: "parent", type: "uint256" },
+          {
+            internalType: "enum SupplyChain.PackageSnapshotStatus",
+            name: "status",
+            type: "uint8",
+          },
+          { internalType: "string", name: "name", type: "string" },
           { internalType: "string", name: "description", type: "string" },
           { internalType: "uint256", name: "created", type: "uint256" },
           { internalType: "bool", name: "exists", type: "bool" },
@@ -64,12 +60,7 @@ const abiObj = [
         name: "snapshot",
         type: "tuple",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
+      { indexed: false, internalType: "uint256", name: "id", type: "uint256" },
     ],
     name: "PackageSnapshotAdded",
     type: "event",
@@ -77,10 +68,16 @@ const abiObj = [
   {
     inputs: [
       { internalType: "uint256", name: "parent", type: "uint256" },
+      {
+        internalType: "enum SupplyChain.PackageSnapshotStatus",
+        name: "status",
+        type: "uint8",
+      },
+      { internalType: "string", name: "name", type: "string" },
       { internalType: "string", name: "description", type: "string" },
     ],
     name: "addPackageSnapshot",
-    outputs: [],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -125,6 +122,12 @@ const abiObj = [
         type: "tuple",
       },
       { internalType: "uint256", name: "parent", type: "uint256" },
+      {
+        internalType: "enum SupplyChain.PackageSnapshotStatus",
+        name: "status",
+        type: "uint8",
+      },
+      { internalType: "string", name: "name", type: "string" },
       { internalType: "string", name: "description", type: "string" },
       { internalType: "uint256", name: "created", type: "uint256" },
       { internalType: "bool", name: "exists", type: "bool" },
