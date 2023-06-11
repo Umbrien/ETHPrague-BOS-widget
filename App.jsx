@@ -192,6 +192,54 @@ State.init({
   packageInfo: null,
 });
 
+function getBranchById(branches, id) {
+  const branch = branches.find((branch) => branch.id === id);
+
+  if (branch) {
+    return branch.snapshots;
+  }
+
+  return null;
+}
+
+function getGql(id) {
+  console.log("getGql id", id);
+  const response = fetch(
+    "https://api.thegraph.com/subgraphs/name/holidayman/ssc-testnet",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `{
+          branches(where: {head_: {handler: "0xd36aadb538870b8299246e3787cf1a1deb32e1da"}}) {
+          id
+            head {
+              id
+            }
+            snapshots {
+              id
+              name
+              description
+              created
+              handler
+              status
+              parent {
+                id
+              }
+            }
+          }
+        }`,
+      }),
+    }
+  );
+  if (!response) {
+    return null;
+  }
+  return getBranchById(response.body.data.branches, id);
+}
+
 const requestHandler = (request, response, Utils) => {
   switch (request.type) {
     case "is-logged":
@@ -221,7 +269,16 @@ const requestHandler = (request, response, Utils) => {
     case "accept-package":
       acceptPackageHandler(request, response, Utils);
       break;
+    case "get-gql-branch":
+      getGqlBranchHandler(request, response, Utils);
+      break;
   }
+};
+
+const getGqlBranchHandler = (request, response, Utils) => {
+  console.log("[BOS] get-gql");
+  const gqlBranch = getGql(request.payload);
+  response(request).send(gqlBranch);
 };
 
 const isLoggedHandler = (request, response, Utils) => {
