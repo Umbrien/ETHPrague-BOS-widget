@@ -197,6 +197,9 @@ const requestHandler = (request, response, Utils) => {
     case "is-admin":
       isAdminHandler(request, response, Utils);
       break;
+    case "get-wallet-address":
+      getWalletAddressHandler(request, response, Utils);
+      break;
     case "make-me-admin":
       makeMeAdminHandler(request, response, Utils);
       break;
@@ -219,6 +222,11 @@ const isAdminHandler = (request, response, Utils) => {
   getAdmins().then((isAdmin) => {
     response(request).send(isAdmin);
   });
+};
+
+const getWalletAddressHandler = (request, response, Utils) => {
+  console.log("[BOS] get-wallet-address");
+  response(request).send(sender);
 };
 
 const makeMeAdminHandler = (request, response, Utils) => {
