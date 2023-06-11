@@ -163,17 +163,63 @@ const requestHandler = (request, response, Utils) => {
     case "is-admin":
       isAdminHandler(request, response, Utils);
       break;
+    case "make-me-admin":
+      makeMeAdminHandler(request, response, Utils);
+      break;
+    case "make-me-user":
+      makeMeUserHandler(request, response, Utils);
+      break;
   }
 };
 
 const isLoggedHandler = (request, response, Utils) => {
+  console.log("[BOS] sender", sender);
   response(request).send(!!sender);
 };
 
 const isAdminHandler = (request, response, Utils) => {
+  console.log("[BOS] get-admins");
   getAdmins().then((isAdmin) => {
     response(request).send(isAdmin);
   });
+};
+
+const makeMeAdminHandler = (request, response, Utils) => {
+  console.log("[BOS] make-me-admin");
+  const suschain = new ethers.Contract(
+    contract,
+    abiObj,
+    Ethers.provider().getSigner()
+  );
+
+  suschain
+    .makeMeAdmin()
+    .then((result) => {
+      console.log("[BOS] make-me-admin result", result);
+      response(request).send(true);
+    })
+    .catch((err) => {
+      console.log("[BOS] make-me-admin error", err);
+    });
+};
+
+const makeMeUserHandler = (request, response, Utils) => {
+  console.log("[BOS] make-me-user");
+  const suschain = new ethers.Contract(
+    contract,
+    abiObj,
+    Ethers.provider().getSigner()
+  );
+
+  suschain
+    .makeMeUser()
+    .then((result) => {
+      console.log("[BOS] make-me-user result", result);
+      response(request).send(true);
+    })
+    .catch((err) => {
+      console.log("[BOS] make-me-user error", err);
+    });
 };
 
 const externalAppUrl = "http://localhost:4000/";
