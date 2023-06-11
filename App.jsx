@@ -151,8 +151,42 @@ const getAdmins = () => {
     });
 };
 
+const hexNumberDateToHuman = (hexNumber) => {
+  const date = new Date(parseInt(hexNumber, 16) * 1000);
+  return date
+    .toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    .replace(/\//g, ".");
+};
+
+const getSnapshot = (id) => {
+  const encodedData = iface.encodeFunctionData("snapshots", [id]);
+
+  return Ethers.provider()
+    .call({
+      to: contract,
+      data: encodedData,
+    })
+    .then((result) => {
+      const decoded = iface.decodeFunctionResult("snapshots", result);
+
+      const handler = decoded.handler[0];
+      const description = decoded.description;
+      const date = hexNumberDateToHuman(decoded.created);
+
+      return { handler, description, date };
+    });
+};
+
 State.init({
   isLogged: !!sender,
+  packageId: 1,
+  packageInfo: null,
 });
 
 const requestHandler = (request, response, Utils) => {
@@ -224,6 +258,18 @@ const makeMeUserHandler = (request, response, Utils) => {
 
 const externalAppUrl = "http://localhost:4000/";
 
+const handlePackageIdInput = (e) => {
+  State.update({ packageId: e.target.value, packageInfo: null });
+};
+
+const handleGetPackageInfo = () => {
+  if (state.packageId) {
+    getSnapshot(state.packageId).then((result) => {
+      State.update({ packageInfo: result });
+    });
+  }
+};
+
 return (
   <>
     <a href={externalAppUrl + "scan-package/qr-code-scanning"} target="_blank">
@@ -234,14 +280,18 @@ return (
         type="text"
         placeholder="Package ID"
         value={state.packageId}
-        onChange={(e) => State.update({ packageId: e.target.value })}
+        onChange={handlePackageIdInput}
       />
-      <a
-        href={externalAppUrl + "create-package/qr-code-creation"}
-        target="_blank"
-      >
-        Print package
-      </a>
+      {state.packageInfo === null ? (
+        <button onClick={handleGetPackageInfo}>Get package info</button>
+      ) : (
+        <a
+          href={`${externalAppUrl}create-package/qr-code-creation?id=${state.packageId}&name=${state.packageInfo.handler}&description=${state.packageInfo.description}&date=${state.packageInfo.date}`}
+          target="_blank"
+        >
+          Print package
+        </a>
+      )}
     </div>
     {!sender && (
       <Web3Connect
