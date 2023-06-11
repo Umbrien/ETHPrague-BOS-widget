@@ -178,11 +178,11 @@ const getSnapshot = (id) => {
     .then((result) => {
       const decoded = iface.decodeFunctionResult("snapshots", result);
 
-      const handler = decoded.handler[0];
+      const name = decoded.name;
       const description = decoded.description;
       const date = hexNumberDateToHuman(decoded.created);
 
-      return { handler, description, date };
+      return { name, description, date };
     });
 };
 
@@ -356,7 +356,7 @@ return (
             </button>
           ) : (
             <a
-              href={`${externalAppUrl}create-package/qr-code-creation?id=${state.packageId}&name=${state.packageInfo.handler}&description=${state.packageInfo.description}&date=${state.packageInfo.date}`}
+              href={`${externalAppUrl}create-package/qr-code-creation?id=${state.packageId}&name=${state.packageInfo.name}&description=${state.packageInfo.description}&date=${state.packageInfo.date}`}
               target="_blank"
               className="btn btn-danger me-2"
             >
