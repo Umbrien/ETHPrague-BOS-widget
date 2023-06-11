@@ -1,4 +1,4 @@
-const contract = "0xAB1b0f09494d208D403a00ae905DeEea47807012";
+const contract = "0xfc238caf851b86137ce56d6f71ec85fc638f0560";
 
 const abiObj = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
@@ -314,33 +314,55 @@ const handleGetPackageInfo = () => {
 
 return (
   <>
-    <a href={externalAppUrl + "scan-package/qr-code-scanning"} target="_blank">
-      Scan package
-    </a>
-    <div>
-      <input
-        type="text"
-        placeholder="Package ID"
-        value={state.packageId}
-        onChange={handlePackageIdInput}
-      />
-      {state.packageInfo === null ? (
-        <button onClick={handleGetPackageInfo}>Get package info</button>
-      ) : (
-        <a
-          href={`${externalAppUrl}create-package/qr-code-creation?id=${state.packageId}&name=${state.packageInfo.handler}&description=${state.packageInfo.description}&date=${state.packageInfo.date}`}
-          target="_blank"
-        >
-          Print package
-        </a>
-      )}
-    </div>
     {!sender && (
       <Web3Connect
         className="LidoStakeFormSubmitContainer"
         connectLabel="Connect with Web3"
       />
     )}
+    <div className="container mb-3">
+      <div className="row">
+        <div className="col-md-8">
+          <div className="form-group">
+            <label htmlFor="printIdInput" className="text-danger">
+              Input package id
+            </label>
+            <input
+              id="printIdInput"
+              type="text"
+              placeholder="Package ID"
+              value={state.packageId}
+              onChange={handlePackageIdInput}
+            />
+          </div>
+        </div>
+        <div className="col md-4 d-flex align-items-end">
+          {state.packageInfo === null ? (
+            <button
+              onClick={handleGetPackageInfo}
+              className="btn btn-danger me-2"
+            >
+              ⬇️ Get package info
+            </button>
+          ) : (
+            <a
+              href={`${externalAppUrl}create-package/qr-code-creation?id=${state.packageId}&name=${state.packageInfo.handler}&description=${state.packageInfo.description}&date=${state.packageInfo.date}`}
+              target="_blank"
+              className="btn btn-danger me-2"
+            >
+              🖨 Print package
+            </a>
+          )}
+          <a
+            href={externalAppUrl + "scan-package/qr-code-scanning"}
+            target="_blank"
+            className="btn btn-dark"
+          >
+            🔎 Scan package
+          </a>
+        </div>
+      </div>
+    </div>
     <Widget
       src="wendersonpires.near/widget/NearSocialBridgeCore"
       props={{
