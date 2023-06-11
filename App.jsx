@@ -289,15 +289,22 @@ const createPackageHandler = (request, response, Utils) => {
     Ethers.provider().getSigner()
   );
 
+  const { parent, status, name, description } = request.payload;
+
   suschain
-    .addPackageSnapshot(0, request.payload)
+    .addPackageSnapshot(parent, status, name, description)
     .then((result) => {
-      console.log("[BOS] create-package result", result);
-      response(request).send(true);
+      result.wait().then((result) => {
+        const newSnapshotId = parseInt(result.events[0].args[1]._hex, 16);
+        response(request).send({
+          ok: true,
+          newSnapshotId,
+        });
+      });
     })
     .catch((err) => {
       console.log("[BOS] create-package error", err);
-      response(request).send(false);
+      response(request).send({ ok: false });
     });
 };
 
